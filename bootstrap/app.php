@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
+use Sentry\Laravel\Integration;
+use App\Classes\ApiResponseClass;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,9 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'firebase.auth' => \App\Http\Middleware\FirebaseAuthMiddleware::class
+            'firebase.auth' => \App\Http\Middleware\FirebaseAuthMiddleware::class,
+            'cors' => \Illuminate\Http\Middleware\HandleCors::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        Integration::handles($exceptions);
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponseClass::notFound($e);
+            }
+        });
     })->create();

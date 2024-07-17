@@ -22,17 +22,14 @@ class BookController extends Controller
     //
     public function index(Request $request)
     {
-        if(! $request->account->can('publish articles', Book::class)) return ApiResponseClass::accessDenied();
+        // if(! $request->account->can('publish articles', Book::class)) return ApiResponseClass::accessDenied();
         
-        // if( ! $this->gates($request->account, 'admin')){
-        //     return ApiResponseClass::accessDenied();
-        // }
-
         $data = $this->bookRepositoryInterface->index();
         return ApiResponseClass::sendResponse(BookResource::collection($data), '', 200);
     }
 
     public function store(StoreBookRequest $request){
+
         $details = [
             'name' => $request->name,
             'author' => $request->author,

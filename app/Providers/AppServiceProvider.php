@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use App\Models\Books;
+
+use App\Classes\ApiResponseClass;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Cache\RateLimiting\Limit;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,8 +21,13 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-
+        RateLimiter::for('api', function (Request $request) {
+            $limit = ($request->bearerToken()) ? 5 : 3;
+            return Limit::perMinute($limit)->by(($request->bearerToken()) ? $request->bearerToken() : $request->ip())->response(function (Request $request, array $headers) {
+                return ApiResponseClass::tooManyRequest(($request->bearerToken()) ? $request->bearerToken() : $request->ip());
+            });
+        });
     }
 }

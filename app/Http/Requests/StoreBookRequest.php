@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Classes\ApiResponseClass;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use App\Policies\BookPolicy as Book;
 class StoreBookRequest extends FormRequest
 {
     /**
@@ -12,6 +14,7 @@ class StoreBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if(! $this->account->can('edit articles', Book::class)) return false;
         return true;
     }
 
@@ -37,4 +40,9 @@ class StoreBookRequest extends FormRequest
             'data'      => $validator->errors()
         ]));
     }
+
+    public function failedAuthorization(){
+        ApiResponseClass::accessDenied();
+    }
+
 }

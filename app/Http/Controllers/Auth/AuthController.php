@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use App\Classes\ApiResponseClass;
 use Illuminate\Http\JsonResponse;
 use Kreait\Laravel\Firebase\Facades\Firebase;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends Controller
 {
@@ -29,6 +26,12 @@ class AuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
+        // if (RateLimiter::tooManyAttempts('login-attempt:'.$request->ip(), $perMinute = 5)) {
+        //     return ApiResponseClass::sendResponse('', 'Too many attempts from: '.$request->ip(), 401);
+        // }
+
+        // RateLimiter::increment('login-attempt:'.$request->ip());
+
         try {
             $request->validate([
                 'email' => 'required|string|email',

@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\AuthController;
 
 Route::prefix('v1')->group(function () {
-    Route::middleware(['firebase.auth'])->group(function () {
+    Route::middleware(['firebase.auth', 'throttle:api'])->group(function () {
         Route::get('/books', [BookController::class, 'index']);
         Route::get('/books/{id}', [BookController::class, 'show']);
         Route::post('/books', [BookController::class, 'store']);
@@ -21,8 +21,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/users/{id}', [UserController::class, 'show']);
     });
 
-    Route::prefix('auth')->group(function () {
-        Route::get('verify', [AuthController::class, 'verifyToken']);
-        Route::post('signin', [AuthController::class, 'login']);
+    Route::middleware(['throttle:api'])->group(function () {
+        Route::prefix('auth')->group(function () {
+            Route::get('verify', [AuthController::class, 'verifyToken']);
+            Route::post('signin', [AuthController::class, 'login']);
+        });
     });
 });

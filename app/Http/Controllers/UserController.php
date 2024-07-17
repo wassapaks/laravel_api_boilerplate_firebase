@@ -31,21 +31,28 @@ class UserController extends Controller
         ];
 
         DB::beginTransaction();
+
         try{
+
             $user = $this->userRepositoryInterface->store($details);
             $details['id'] = $user->id;
+
             //When a user is created, we create a firebase account as well
             if(!$this->firebaseService->createFirebaseAuth($details)){
                 throw new \Exception("Cannot create Firebase Auth"); 
             }
+
             $user->givePermissionTo('edit articles', 'delete articles');
+
             //The account is not yet fully usable they have to verify the link in their given email
             $this->firebaseService->sendVerificationLink($user->email, env('FIREBASE_CONTINUE_URL'));
 
             DB::commit();
             return ApiResponseClass::sendResponse(new UserResource($user),'User Create Success!',201);
+
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
+
         }
     }
 
