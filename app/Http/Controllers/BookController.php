@@ -23,7 +23,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         // if(! $request->account->can('publish articles', Book::class)) return ApiResponseClass::accessDenied();
-        
+
         $data = $this->bookRepositoryInterface->index();
         return ApiResponseClass::sendResponse(BookResource::collection($data), '', 200);
     }

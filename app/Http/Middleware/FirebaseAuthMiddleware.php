@@ -39,12 +39,17 @@ class FirebaseAuthMiddleware
             $verifiedToken = $this->firebaseAuth->verifyIdToken($token);
 
             $user = UserRepository::getByIdUser($verifiedToken->claims()->get('sub'));
-            
-            if(!$user){
+
+            if (!$user) {
                 throw ValidationException::withMessages(['Unauthorized']);
             }
 
-            $request->merge(['account' => $user]);
+            $request->merge(['user' => $user]);
+
+            //add this
+            $request->setUserResolver(function () use ($user) {
+                return $user;
+            });
             
         } catch (\Exception $e) {
             return response()->json(['error' => 'Unauthorized'], 401);

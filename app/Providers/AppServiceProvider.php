@@ -24,9 +24,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         RateLimiter::for('api', function (Request $request) {
-            $limit = ($request->bearerToken()) ? 5 : 3;
-            return Limit::perMinute($limit)->by(($request->bearerToken()) ? $request->bearerToken() : $request->ip())->response(function (Request $request, array $headers) {
-                return ApiResponseClass::tooManyRequest(($request->bearerToken()) ? $request->bearerToken() : $request->ip());
+            $limit = ($request->bearerToken()) ? 1000 : 50;
+            return Limit::perMinute($limit)->by($request->ip())->response(function (Request $request, array $headers) {
+                return ApiResponseClass::tooManyRequest($request->ip());
             });
         });
     }
