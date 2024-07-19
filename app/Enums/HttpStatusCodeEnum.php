@@ -1,0 +1,133 @@
+<?php
+namespace App\Enums;
+use App\Interfaces\HttpStatusInterface;
+
+// This can be found in the Symfony\Component\HttpFoundation\Response class
+enum HttpStatusCodeEnum: int implements HttpStatusInterface{
+    case HTTP_CONTINUE = 100;
+    case HTTP_SWITCHING_PROTOCOLS = 101;
+    case HTTP_PROCESSING = 102;            // RFC2518
+    case HTTP_OK = 200;
+    case HTTP_CREATED = 201;
+    case HTTP_ACCEPTED = 202;
+    case HTTP_NON_AUTHORITATIVE_INFORMATION = 203;
+    case HTTP_NO_CONTENT = 204;
+    case HTTP_RESET_CONTENT = 205;
+    case HTTP_PARTIAL_CONTENT = 206;
+    case HTTP_MULTI_STATUS = 207;          // RFC4918
+    case HTTP_ALREADY_REPORTED = 208;      // RFC5842
+    case HTTP_IM_USED = 226;               // RFC3229
+    case HTTP_MULTIPLE_CHOICES = 300;
+    case HTTP_MOVED_PERMANENTLY = 301;
+    case HTTP_FOUND = 302;
+    case HTTP_SEE_OTHER = 303;
+    case HTTP_NOT_MODIFIED = 304;
+    case HTTP_USE_PROXY = 305;
+    case HTTP_RESERVED = 306;
+    case HTTP_TEMPORARY_REDIRECT = 307;
+    case HTTP_PERMANENTLY_REDIRECT = 308;  // RFC7238
+    case HTTP_BAD_REQUEST = 400;
+    case HTTP_UNAUTHORIZED = 401;
+    case HTTP_PAYMENT_REQUIRED = 402;
+    case HTTP_FORBIDDEN = 403;
+    case HTTP_NOT_FOUND = 404;
+    case HTTP_METHOD_NOT_ALLOWED = 405;
+    case HTTP_NOT_ACCEPTABLE = 406;
+    case HTTP_PROXY_AUTHENTICATION_REQUIRED = 407;
+    case HTTP_REQUEST_TIMEOUT = 408;
+    case HTTP_CONFLICT = 409;
+    case HTTP_GONE = 410;
+    case HTTP_LENGTH_REQUIRED = 411;
+    case HTTP_PRECONDITION_FAILED = 412;
+    case HTTP_REQUEST_ENTITY_TOO_LARGE = 413;
+    case HTTP_REQUEST_URI_TOO_LONG = 414;
+    case HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
+    case HTTP_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
+    case HTTP_EXPECTATION_FAILED = 417;
+    case HTTP_I_AM_A_TEAPOT = 418;                                               // RFC2324
+    case HTTP_MISDIRECTED_REQUEST = 421;                                         // RFC7540
+    case HTTP_UNPROCESSABLE_ENTITY = 422;                                        // RFC4918
+    case HTTP_LOCKED = 423;                                                      // RFC4918
+    case HTTP_FAILED_DEPENDENCY = 424;                                           // RFC4918
+    case HTTP_RESERVED_FOR_WEBDAV_ADVANCED_COLLECTIONS_EXPIRED_PROPOSAL = 425;   // RFC2817
+    case HTTP_UPGRADE_REQUIRED = 426;                                            // RFC2817
+    case HTTP_PRECONDITION_REQUIRED = 428;                                       // RFC6585
+    case HTTP_TOO_MANY_REQUESTS = 429;                                           // RFC6585
+    case HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE = 431;                             // RFC6585
+    case HTTP_UNAVAILABLE_FOR_LEGAL_REASONS = 451;
+    case HTTP_INTERNAL_SERVER_ERROR = 500;
+    case HTTP_NOT_IMPLEMENTED = 501;
+    case HTTP_BAD_GATEWAY = 502;
+    case HTTP_SERVICE_UNAVAILABLE = 503;
+    case HTTP_GATEWAY_TIMEOUT = 504;
+    case HTTP_VERSION_NOT_SUPPORTED = 505;
+    case HTTP_VARIANT_ALSO_NEGOTIATES_EXPERIMENTAL = 506;                        // RFC2295
+    case HTTP_INSUFFICIENT_STORAGE = 507;                                        // RFC4918
+    case HTTP_LOOP_DETECTED = 508;                                               // RFC5842
+    case HTTP_NOT_EXTENDED = 510;                                                // RFC2774
+    case HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;                             // RFC6585
+    
+    public function message(): string { 
+        return match($this) {
+            HttpStatusCodeEnum::HTTP_CONTINUE => 'Continue', 
+            HttpStatusCodeEnum::HTTP_SWITCHING_PROTOCOLS => 'Switching Protocols',
+            HttpStatusCodeEnum::HTTP_PROCESSING => 'Processing',
+            HttpStatusCodeEnum::HTTP_OK => 'OK',
+            HttpStatusCodeEnum::HTTP_CREATED => 'Created',
+            HttpStatusCodeEnum::HTTP_ACCEPTED => 'Accepted',
+            HttpStatusCodeEnum::HTTP_NON_AUTHORITATIVE_INFORMATION => 'Non-Authoritative Information',
+            HttpStatusCodeEnum::HTTP_NO_CONTENT => 'No Content',
+            HttpStatusCodeEnum::HTTP_RESET_CONTENT => 'Reset Content',
+            HttpStatusCodeEnum::HTTP_PARTIAL_CONTENT => 'Partial Content',
+            HttpStatusCodeEnum::HTTP_MULTI_STATUS => 'Multi-Status',
+            HttpStatusCodeEnum::HTTP_ALREADY_REPORTED => 'Already Reported',
+            HttpStatusCodeEnum::HTTP_IM_USED => 'IM Used',
+            HttpStatusCodeEnum::HTTP_MULTIPLE_CHOICES => 'Multiple Choices',
+            HttpStatusCodeEnum::HTTP_MOVED_PERMANENTLY => 'Moved Permanently',
+            HttpStatusCodeEnum::HTTP_FOUND => 'Found',
+            HttpStatusCodeEnum::HTTP_SEE_OTHER => 'See Other',
+            HttpStatusCodeEnum::HTTP_NOT_MODIFIED => 'Not Modified',
+            HttpStatusCodeEnum::HTTP_USE_PROXY => 'Use Proxy',
+            HttpStatusCodeEnum::HTTP_TEMPORARY_REDIRECT => 'Temporary Redirect',
+            HttpStatusCodeEnum::HTTP_PERMANENTLY_REDIRECT => 'Permanent Redirect',
+            HttpStatusCodeEnum::HTTP_BAD_REQUEST => 'Bad Request',
+            HttpStatusCodeEnum::HTTP_UNAUTHORIZED => 'Unauthorized',
+            HttpStatusCodeEnum::HTTP_PAYMENT_REQUIRED => 'Payment Required',
+            HttpStatusCodeEnum::HTTP_FORBIDDEN => 'Forbidden',
+            HttpStatusCodeEnum::HTTP_NOT_FOUND => 'Not Found',
+            HttpStatusCodeEnum::HTTP_METHOD_NOT_ALLOWED => 'Method Not Allowed',
+            HttpStatusCodeEnum::HTTP_NOT_ACCEPTABLE => 'Not Acceptable',
+            HttpStatusCodeEnum::HTTP_PROXY_AUTHENTICATION_REQUIRED => 'Proxy Authentication Required',
+            HttpStatusCodeEnum::HTTP_REQUEST_TIMEOUT => 'Request Timeout',
+            HttpStatusCodeEnum::HTTP_CONFLICT => 'Conflict',
+            HttpStatusCodeEnum::HTTP_GONE => 'Gone',
+            HttpStatusCodeEnum::HTTP_LENGTH_REQUIRED => 'Length Required',
+            HttpStatusCodeEnum::HTTP_PRECONDITION_FAILED => 'Precondition Failed',
+            HttpStatusCodeEnum::HTTP_REQUEST_ENTITY_TOO_LARGE => 'Payload Too Large',
+            HttpStatusCodeEnum::HTTP_REQUEST_URI_TOO_LONG => 'URI Too Long',
+            HttpStatusCodeEnum::HTTP_UNSUPPORTED_MEDIA_TYPE => 'Unsupported Media Type',
+            HttpStatusCodeEnum::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE => 'Range Not Satisfiable',
+            HttpStatusCodeEnum::HTTP_EXPECTATION_FAILED => 'Expectation Failed',
+            HttpStatusCodeEnum::HTTP_I_AM_A_TEAPOT => 'I\'m a teapot',
+            HttpStatusCodeEnum::HTTP_MISDIRECTED_REQUEST => 'Misdirected Request',
+            HttpStatusCodeEnum::HTTP_UNPROCESSABLE_ENTITY => 'Unprocessable Entity',
+            HttpStatusCodeEnum::HTTP_LOCKED => 'Locked',
+            HttpStatusCodeEnum::HTTP_FAILED_DEPENDENCY => 'Failed Dependency',
+            HttpStatusCodeEnum::HTTP_UPGRADE_REQUIRED => 'Upgrade Required',
+            HttpStatusCodeEnum::HTTP_PRECONDITION_REQUIRED => 'Precondition Required',
+            HttpStatusCodeEnum::HTTP_TOO_MANY_REQUESTS => 'Too Many Requests',
+            HttpStatusCodeEnum::HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE => 'Request Header Fields Too Large',
+            HttpStatusCodeEnum::HTTP_INTERNAL_SERVER_ERROR => 'Internal Server Error',
+            HttpStatusCodeEnum::HTTP_NOT_IMPLEMENTED => 'Not Implemented',
+            HttpStatusCodeEnum::HTTP_BAD_GATEWAY => 'Bad Gateway',
+            HttpStatusCodeEnum::HTTP_SERVICE_UNAVAILABLE => 'Service Unavailable',
+            HttpStatusCodeEnum::HTTP_GATEWAY_TIMEOUT => 'Gateway Timeout',
+            HttpStatusCodeEnum::HTTP_VERSION_NOT_SUPPORTED => 'HTTP Version Not Supported',
+            HttpStatusCodeEnum::HTTP_VARIANT_ALSO_NEGOTIATES_EXPERIMENTAL => 'Variant Also Negotiates',
+            HttpStatusCodeEnum::HTTP_INSUFFICIENT_STORAGE => 'Insufficient Storage',
+            HttpStatusCodeEnum::HTTP_LOOP_DETECTED => 'Loop Detected',
+            HttpStatusCodeEnum::HTTP_NOT_EXTENDED => 'Not Extended',
+            HttpStatusCodeEnum::HTTP_NETWORK_AUTHENTICATION_REQUIRED => 'Network Authentication Required'
+        };
+    }
+}

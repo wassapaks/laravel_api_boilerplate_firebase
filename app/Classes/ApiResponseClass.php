@@ -4,9 +4,9 @@ namespace App\Classes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
-use Response;
+use App\Enums\HttpStatusCodeEnum;
 
-class ApiResponseClass extends StatusCode
+class ApiResponseClass
 {
     /**
      * Create a new class instance.
@@ -26,12 +26,12 @@ class ApiResponseClass extends StatusCode
         return (is_string($e)) ? \Sentry\captureMessage($e) : \Sentry\captureException($e);
     }
 
-    public static function throw($e, $message = "Something went wrong, process not completed!", $code = parent::HTTP_INTERNAL_SERVER_ERROR){
+    public static function throw($e, $message = "Something went wrong, process not completed!", $code = HttpStatusCodeEnum::HTTP_INTERNAL_SERVER_ERROR->value){
         self::log($e);
         throw new HttpResponseException(response()->json(["message"=>$message], $code));
     }
 
-    public static function sendResponse($result , $message , $code=200){
+    public static function sendResponse($result , $message , $code=HttpStatusCodeEnum::HTTP_OK->value){
         $response=[
             'success' => true,
             'data' => $result
@@ -43,16 +43,14 @@ class ApiResponseClass extends StatusCode
     }
 
     public static function accessDenied(){
-        throw new HttpResponseException(response()->json([
-            "message" => parent::$statusTexts[parent::HTTP_FORBIDDEN]
-        ], parent::HTTP_FORBIDDEN));
+        self::throw('Somebody is trying to access from ', HttpStatusCodeEnum::HTTP_FORBIDDEN->message(), HttpStatusCodeEnum::HTTP_FORBIDDEN->value);
     }
 
     public static function tooManyRequest($e){
-        self::throw('Too many request from ' . $e, parent::$statusTexts[429], parent::HTTP_TOO_MANY_REQUESTS);
+        self::throw('Too many request from ' . $e, HttpStatusCodeEnum::HTTP_TOO_MANY_REQUESTS->message(), HttpStatusCodeEnum::HTTP_TOO_MANY_REQUESTS->value);
     }
 
     public static function notFound($e){
-        self::throw($e, parent::$statusTexts[404], parent::HTTP_NOT_FOUND);
+        self::throw($e, HttpStatusCodeEnum::HTTP_NOT_FOUND->message(), HttpStatusCodeEnum::HTTP_NOT_FOUND->value);
     }
 }
