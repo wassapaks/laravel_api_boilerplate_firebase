@@ -27,8 +27,6 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->prefix('api')
                     ->group($routeFile);
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
