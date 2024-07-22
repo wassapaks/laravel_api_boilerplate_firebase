@@ -3,15 +3,22 @@
 namespace App\Repositories;
 use App\Models\User;    
 use App\Interfaces\UserRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
 
 class UserRepository implements UserRepositoryInterface
 {
     public function index(){
-        return User::all();
+        return Cache::remember('users', $minutes='60', function()
+        {
+            return User::all();
+        });
     }
     
     public function getById($id){
-        return User::findOrFail($id);
+        return Cache::remember("users.{$id}", $minutes='60', function() use($id)
+        {
+            return User::findOrFail($id);
+        });
     }
 
     public function store(array $data){

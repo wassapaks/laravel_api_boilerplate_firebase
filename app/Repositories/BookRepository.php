@@ -3,15 +3,22 @@
 namespace App\Repositories;
 use App\Models\Books;
 use App\Interfaces\BookRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
 
 class BookRepository implements BookRepositoryInterface
 {
     public function index(){
-        return Books::all();
+        return Cache::remember('books', $minutes='60', function()
+        {
+            return Books::all();
+        });
     }
     
     public function getById($id){
-        return Books::findOrFail($id);
+        return Cache::remember("books.{$id}", $minutes='60', function() use($id)
+        {
+            return Books::findOrFail($id);
+        });
     }
 
     public function store(array $data){
