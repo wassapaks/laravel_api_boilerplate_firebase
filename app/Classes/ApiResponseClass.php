@@ -53,4 +53,8 @@ class ApiResponseClass
     public static function notFound($e){
         self::throw($e, HttpStatusCodeEnum::HTTP_NOT_FOUND->message(), HttpStatusCodeEnum::HTTP_NOT_FOUND->value);
     }
+
+    public static function badRequest($e){
+        self::throw($e, HttpStatusCodeEnum::HTTP_BAD_REQUEST->message(), HttpStatusCodeEnum::HTTP_BAD_REQUEST->value);
+    }
 }

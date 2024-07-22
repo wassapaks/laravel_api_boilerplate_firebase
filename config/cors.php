@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/v1/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['POST','GET', 'PATCH', 'PUT', 'OPTIONS'],
 
@@ -23,7 +23,7 @@ return [
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Origin', 'X-Requested-With','Authorization', 'Content-Type', 'Accept'],
+    'allowed_headers' => ['Origin', 'X-Api-Version','Authorization', 'Content-Type', 'Accept'],
 
     'exposed_headers' => [],
 
