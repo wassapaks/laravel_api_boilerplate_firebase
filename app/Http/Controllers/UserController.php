@@ -20,7 +20,7 @@ class UserController extends Controller
         $this->firebaseService = $firebaseService;
     }
 
-    public function store(StoreUserRequest $request): JsonResponse
+    public function store(StoreUserRequest $request): ApiResponseClass
     {
         $details = [
             'name' => $request->name,
@@ -48,7 +48,7 @@ class UserController extends Controller
             $this->firebaseService->sendVerificationLink($user->email, env('FIREBASE_CONTINUE_URL'));
 
             DB::commit();
-            return ApiResponseClass::sendResponse(new UserResource($user),'User Create Success!',201);
+            return ApiResponseClass::created(new UserResource($user));
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -56,7 +56,8 @@ class UserController extends Controller
         }
     }
 
-    public function update(StoreUserRequest $request, $id): JsonResponse{
+    public function update(StoreUserRequest $request, $id): ApiResponseClass
+    {
         $details = [
             'name' => $request->name,
             'email' => $request->email,
@@ -69,19 +70,20 @@ class UserController extends Controller
             $user = $this->userRepositoryInterface->update($details, $id);
             
             DB::commit();
-            return ApiResponseClass::sendResponse(new UserResource($user),'Product Create Success!',201);
+            return ApiResponseClass::updated(new UserResource($request),'Product Create Success!',201);
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
         }
     }
 
-    public function destroy($id): JsonResponse{
+    public function destroy($id): ApiResponseClass
+    {
         $this->userRepositoryInterface->getById($id);
-        return ApiResponseClass::sendResponse('User Delete Success', '' , 204);
+        return ApiResponseClass::deleted('User Delete Success');
     }
 
     public function show($id) {
         $user = $this->userRepositoryInterface->getById($id);
-        return ApiResponseClass::sendResponse(new UserResource($user),'',200);
+        return ApiResponseClass::ok(new UserResource($user));
     }
 }

@@ -14,7 +14,7 @@ class StoreBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if(! $this->account->can('edit articles', Book::class)) return false;
+        // if(! $this->account->can('edit articles', Book::class)) return false;
         return true;
     }
 

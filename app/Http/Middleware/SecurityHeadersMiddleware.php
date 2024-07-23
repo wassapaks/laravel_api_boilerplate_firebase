@@ -18,7 +18,7 @@ class SecurityHeadersMiddleware
     {
 
         if (!$request->hasHeader('X-Api-Version') || !$request->prefers(['application/json'])) {
-            return response()->json(['error' => 'Bad Request'], 400);
+            return response()->json(['error_message' => 'Bad Request'], 400);
         }
 
         // For Reference: 

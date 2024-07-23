@@ -16,19 +16,21 @@ class BookController extends Controller
 {
     private BookRepositoryInterface $bookRepositoryInterface;
 
-    public function __construct(BookRepositoryInterface $bookRepositoryInterface)  {
+    public function __construct(BookRepositoryInterface $bookRepositoryInterface)
+    {
         $this->bookRepositoryInterface = $bookRepositoryInterface;
     }
     //
-    public function index(Request $request)
+    public function index(Request $request) : ApiResponseClass
     {
         // if(! $request->account->can('publish articles', Book::class)) return ApiResponseClass::accessDenied();
 
         $data = $this->bookRepositoryInterface->index();
-        return ApiResponseClass::sendResponse(BookResource::collection($data), '', 200);
+        return ApiResponseClass::ok(BookResource::collection($data));
     }
 
-    public function store(StoreBookRequest $request){
+    public function store(StoreBookRequest $request) : ApiResponseClass
+    {
 
         $details = [
             'name' => $request->name,
@@ -36,41 +38,42 @@ class BookController extends Controller
             'publish_date' => $request->publish_date
         ];
         DB::beginTransaction();
-        try{
+        try {
             $book = $this->bookRepositoryInterface->store($details);
             DB::commit();
-            return ApiResponseClass::sendResponse(new BookResource($book),'Product Create Success!',201);
-        }catch(\Exception $ex){
+            return ApiResponseClass::created(new BookResource($book));
+        } catch (\Exception $ex) {
             return ApiResponseClass::rollback($ex);
         }
     }
 
-    public function show($id) {
+    public function show($id) : ApiResponseClass
+    {
         $book = $this->bookRepositoryInterface->getById($id);
-        return ApiResponseClass::sendResponse(new BookResource($book),'',200);
+        return ApiResponseClass::ok(new BookResource($book));
     }
 
-    public function update(UpdateBookRequest $request, $id) {
+    public function update(UpdateBookRequest $request, $id) : ApiResponseClass
+    {
         $details = [
             'name' => $request->name,
             'author' => $request->author,
             'publish_date' => $request->publish_date
         ];
         DB::beginTransaction();
-        try{
+        try {
             $book = $this->bookRepositoryInterface->update($details, $id);
             DB::commit();
-            return ApiResponseClass::sendResponse(new BookResource($book),'Product Create Success!',201);
-        }catch(\Exception $ex){
+            return $book ? ApiResponseClass::updated(new BookResource($request)) :
+                ApiResponseClass::ok(['Record not found, no action taken.']);
+        } catch (\Exception $ex) {
             return ApiResponseClass::rollback($ex);
         }
-        
     }
 
-    public function destroy($id){
-        $this->bookRepositoryInterface->destroy($id);
-        return ApiResponseClass::sendResponse('Product Delete Success', '' , 204);
-
+    public function destroy($id) : ApiResponseClass
+    {
+        return $this->bookRepositoryInterface->destroy($id) ?
+            ApiResponseClass::deleted('Record has been deleted.') : ApiResponseClass::ok(['Record not found, no action taken.']);
     }
-
 }

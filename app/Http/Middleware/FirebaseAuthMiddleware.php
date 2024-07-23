@@ -9,7 +9,6 @@ use Kreait\Firebase\Contract\Auth as FirebaseAuth;
 use \Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use Illuminate\Validation\ValidationException;
 use Exception;
 use Throwable;
 
@@ -32,17 +31,13 @@ class FirebaseAuthMiddleware
         $token = $request->bearerToken();
 
         if (!$token) {
-            return response()->json(['error', 'Unauthorized'], 401);
+            return response()->json(['error_message' => 'Unauthorized'], 401);
         }
 
         try {
             $verifiedToken = $this->firebaseAuth->verifyIdToken($token);
 
             $user = UserRepository::getByIdUser($verifiedToken->claims()->get('sub'));
-
-            if (!$user) {
-                throw ValidationException::withMessages(['Unauthorized']);
-            }
 
             $request->merge(['user' => $user]);
 
@@ -51,8 +46,8 @@ class FirebaseAuthMiddleware
                 return $user;
             });
             
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        } catch (Exception $e) {
+            return response()->json(['error_message' => 'Unauthorized'], 401);
         }
         return $next($request);
     }

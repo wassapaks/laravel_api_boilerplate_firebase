@@ -20,7 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
             $routeFile = $apiVersion != env('X_API_VERSION') ? base_path(sprintf('routes/%s.%s.php', 'api', $apiVersion)) : base_path(sprintf('routes/%s.php', 'api'));
             
             if (!file_exists($routeFile)) {
-                return ApiResponseClass::badRequest('File Version Missing');
+                return response()->json([
+                    'error_message' => 'Wrong Version Request.',
+                ], 400);
             }
 
             Route::middleware('api')
@@ -44,7 +46,9 @@ return Application::configure(basePath: dirname(__DIR__))
         Integration::handles($exceptions);
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
-                return ApiResponseClass::notFound($e);
+                return response()->json([
+                    'error_message' => 'Route Not found',
+                ], 404);
             }
         });
     })->create();

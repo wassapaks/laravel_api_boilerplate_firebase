@@ -30,7 +30,7 @@ class BookRepository implements BookRepositoryInterface
     }
 
     public function destroy($id){
-        Books::destroy($id);
+        return Books::destroy($id);
     }
 
 }

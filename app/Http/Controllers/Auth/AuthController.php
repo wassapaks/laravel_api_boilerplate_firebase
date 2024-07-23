@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Classes\ApiResponseClass;
-use Illuminate\Http\JsonResponse;
+use Exception;
+use Illuminate\Validation\ValidationException;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Illuminate\Support\Facades\RateLimiter;
+use Kreait\Firebase\Auth\SignIn\FailedToSignIn;
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 
 class AuthController extends Controller
 {
@@ -22,9 +25,9 @@ class AuthController extends Controller
      * Login Function
      * Login function using firebase
      * @param Request $request
-     * @return JsonREsponse
+     * @return ApiResponseClass
      */
-    public function login(Request $request): JsonResponse
+    public function login(Request $request): ApiResponseClass
     {
         // if (RateLimiter::tooManyAttempts('login-attempt:'.$request->ip(), $perMinute = 5)) {
         //     return ApiResponseClass::sendResponse('', 'Too many attempts from: '.$request->ip(), 401);
@@ -38,22 +41,27 @@ class AuthController extends Controller
                 'password' => 'required|string',
             ]);
             $user = $this->firebase->signInWithEmailAndPassword($request->email, $request->password);
-            
-            return ApiResponseClass::sendResponse($user->data(), '', 200);
-        } catch (\Exception $ex) {
-            return ApiResponseClass::sendResponse('', 'Username or Password is wrong.', 401);
+            return ApiResponseClass::ok($user->data());
+        } catch (FailedToSignIn $e) {
+            return ApiResponseClass::throw($e, 'Username or Password is wrong.', 401);
+        } catch (ValidationException $e){
+            return ApiResponseClass::throw($e, 'Missing parameters!', 400);
+        } catch (Exception $e){
+            return ApiResponseClass::throw($e);
         }
     }
 
-    public function verifyToken(Request $request): JsonResponse
+    public function verifyToken(Request $request): ApiResponseClass
     {
         $token = $request->bearerToken();
         try {
             $verifiedIdToken = $this->firebase->verifyIdToken($token);
             $user = $this->firebase->getUser($verifiedIdToken->claims()->get('sub'));
-            return ApiResponseClass::sendResponse($user, '', 200);
-        } catch (\Exception $e) {
-            return ApiResponseClass::sendResponse($e->getMessage(), '', 401);
+            return ApiResponseClass::ok($user);
+        } catch (FailedToVerifyToken $e) {
+            return ApiResponseClass::forbidden($e);
+        } catch (Exception $e){
+            return ApiResponseClass::throw($e);
         }
     }
 }
