@@ -21,7 +21,7 @@ class BookController extends Controller
         $this->bookRepositoryInterface = $bookRepositoryInterface;
     }
     //
-    public function index(Request $request) : ApiResponseClass
+    public function index(Request $request): ApiResponseClass
     {
         // if(! $request->account->can('publish articles', Book::class)) return ApiResponseClass::accessDenied();
 
@@ -29,7 +29,7 @@ class BookController extends Controller
         return ApiResponseClass::ok(BookResource::collection($data));
     }
 
-    public function store(StoreBookRequest $request) : ApiResponseClass
+    public function store(StoreBookRequest $request): ApiResponseClass
     {
 
         $details = [
@@ -47,13 +47,17 @@ class BookController extends Controller
         }
     }
 
-    public function show($id) : ApiResponseClass
+    public function show($id): ApiResponseClass
     {
-        $book = $this->bookRepositoryInterface->getById($id);
-        return ApiResponseClass::ok(new BookResource($book));
+        try{
+            $book = $this->bookRepositoryInterface->getById($id);
+            return ApiResponseClass::ok(new BookResource($book));
+        }catch (\Exception $ex) {
+            return ApiResponseClass::okButResourceNotFound();
+        }
     }
 
-    public function update(UpdateBookRequest $request, $id) : ApiResponseClass
+    public function update(UpdateBookRequest $request, $id): ApiResponseClass
     {
         $details = [
             'name' => $request->name,
@@ -64,16 +68,18 @@ class BookController extends Controller
         try {
             $book = $this->bookRepositoryInterface->update($details, $id);
             DB::commit();
-            return $book ? ApiResponseClass::updated(new BookResource($request)) :
-                ApiResponseClass::ok(['Record not found, no action taken.']);
+            return $book ?
+                ApiResponseClass::updated(new BookResource($request)) :
+                ApiResponseClass::okButResourceNotFound();
         } catch (\Exception $ex) {
             return ApiResponseClass::rollback($ex);
         }
     }
 
-    public function destroy($id) : ApiResponseClass
+    public function destroy($id): ApiResponseClass
     {
         return $this->bookRepositoryInterface->destroy($id) ?
-            ApiResponseClass::deleted('Record has been deleted.') : ApiResponseClass::ok(['Record not found, no action taken.']);
+            ApiResponseClass::deleted() : 
+            ApiResponseClass::okButResourceNotFound();
     }
 }

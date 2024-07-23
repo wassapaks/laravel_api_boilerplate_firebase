@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Classes\ApiResponseClass;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Resources\UserResource;
@@ -52,7 +51,6 @@ class UserController extends Controller
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
-
         }
     }
 
@@ -68,9 +66,10 @@ class UserController extends Controller
         DB::beginTransaction();
         try{
             $user = $this->userRepositoryInterface->update($details, $id);
-            
             DB::commit();
-            return ApiResponseClass::updated(new UserResource($request),'Product Create Success!',201);
+            return $user ?
+            ApiResponseClass::updated(new UserResource($request)) :
+            ApiResponseClass::okButResourceNotFound();
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
         }
@@ -78,12 +77,17 @@ class UserController extends Controller
 
     public function destroy($id): ApiResponseClass
     {
-        $this->userRepositoryInterface->getById($id);
-        return ApiResponseClass::deleted('User Delete Success');
+        return $this->userRepositoryInterface->getById($id) ? 
+        ApiResponseClass::deleted():
+        ApiResponseClass::okButResourceNotFound();
     }
 
-    public function show($id) {
-        $user = $this->userRepositoryInterface->getById($id);
-        return ApiResponseClass::ok(new UserResource($user));
+    public function show($id) : ApiResponseClass {
+        try{
+            $book = $this->userRepositoryInterface->getById($id);
+            return ApiResponseClass::ok(new UserResource($book));
+        }catch (\Exception $ex) {
+            return ApiResponseClass::okButResourceNotFound();
+        }
     }
 }

@@ -45,16 +45,20 @@ class ApiResponseClass implements Responsable
         return new static(HttpStatusCodeEnum::HTTP_OK->value, $data);
     }
 
-    public static function deleted($message = 'Successfully deleted.'){
-        return new static(HttpStatusCodeEnum::HTTP_OK->value, [$message]);
+    public static function okButResourceNotFound(){
+        return new static(HttpStatusCodeEnum::HTTP_OK->value, ['message'=>'Record not found, no action taken.']);
     }
 
-    public static function created($data, $message = "Successfuly added record."){
-        return new static(HttpStatusCodeEnum::HTTP_CREATED->value, $data, $message);
+    public static function deleted(){
+        return new static(HttpStatusCodeEnum::HTTP_OK->value, ['message' => 'Record has been deleted.']);
     }
 
-    public static function updated($data, $message = "Successfuly updated record."){
-        return new static(HttpStatusCodeEnum::HTTP_ACCEPTED->value, $data, $message);
+    public static function created($data){
+        return new static(HttpStatusCodeEnum::HTTP_CREATED->value, ['message' => "Successfuly added record."]);
+    }
+
+    public static function updated($data){
+        return new static(HttpStatusCodeEnum::HTTP_ACCEPTED->value, ['message' => "Successfuly updated the record."]);
     }
 
     public static function rollback($e, $message = "Something went wrong, process not completed!", $code = HttpStatusCodeEnum::HTTP_INTERNAL_SERVER_ERROR->value){
