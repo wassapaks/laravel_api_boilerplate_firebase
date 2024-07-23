@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $apiVersion = $request->header('X-Api-Version', env('X_API_VERSION'));
 
             $routeFile = $apiVersion != env('X_API_VERSION') ? base_path(sprintf('routes/%s.%s.php', 'api', $apiVersion)) : base_path(sprintf('routes/%s.php', 'api'));
-            
+
             if (!file_exists($routeFile)) {
                 return response()->json([
                     'error_message' => 'Wrong Version Request.',
@@ -26,8 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             Route::middleware('api')
-                    ->prefix('api')
-                    ->group($routeFile);
+                ->prefix('api')
+                ->group($routeFile);
 
         },
     )
