@@ -1,6 +1,6 @@
 ## Laravel API Boilerplate (Firebase Edition) for Laravel 11
 
-This is a starter kit you can use to build your first API in seconds. Built on top of Laravel 11 Framework. I have used this in one of my current project. This api required Firebase for authentication, but you can configure to use JWT, Cognito, Sanctum or its up to you. Sharing this as most of the components I used are also open source. 
+This is a starter kit you can use to build your first API in seconds. Built on top of Laravel 11 Framework. I developed this for one of my project. This api requires Firebase for authentication, but you can configure to use JWT, Cognito, Sanctum or its up to you. Sharing this as most of the components and framework I used are all open source. 
 
 In building this api, I have the following rest components checklist in mind:
 
