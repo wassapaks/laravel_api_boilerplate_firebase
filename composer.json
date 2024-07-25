@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "wassapaks/laravel_api_boilerplate_firebase",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "This is a Laravel API Boilerplate you can use to build your first API in seconds. Built on top of Laravel 11 Framework. I developed this for one of my project. This api requires Firebase for authentication, but you can configure to use JWT, Cognito, Sanctum or its up to you. Sharing this as most of the components and framework I used are all open source. ",
     "keywords": ["laravel", "framework", "rest api", "boilerplate", "laravel 11", "firebase", "laravel hateoas", "api gates", "api policies"],
     "license": "MIT",
     "require": {
