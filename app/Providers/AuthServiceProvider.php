@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Firebase\FirebaseUserProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;

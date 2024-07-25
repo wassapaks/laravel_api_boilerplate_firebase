@@ -42,7 +42,7 @@ class ApiResponseClass implements Responsable
     }
 
     public static function ok($data){
-        return new static(HttpStatusCodeEnum::HTTP_OK->value, $data);
+        return new static(HttpStatusCodeEnum::HTTP_OK->value, $data );
     }
 
     public static function okButResourceNotFound(){

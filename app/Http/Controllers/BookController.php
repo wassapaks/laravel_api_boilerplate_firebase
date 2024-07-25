@@ -10,7 +10,8 @@ use App\Http\Resources\BookResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use App\Policies\BookPolicy as Book;
+use App\Policies\BookPolicy as BookPolicy;
+use Hateoas\HateoasBuilder;
 
 class BookController extends Controller
 {
@@ -49,10 +50,11 @@ class BookController extends Controller
 
     public function show($id): ApiResponseClass
     {
-        try{
+
+        try {
             $book = $this->bookRepositoryInterface->getById($id);
             return ApiResponseClass::ok(new BookResource($book));
-        }catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             return ApiResponseClass::okButResourceNotFound();
         }
     }
@@ -79,7 +81,7 @@ class BookController extends Controller
     public function destroy($id): ApiResponseClass
     {
         return $this->bookRepositoryInterface->destroy($id) ?
-            ApiResponseClass::deleted() : 
+            ApiResponseClass::deleted() :
             ApiResponseClass::okButResourceNotFound();
     }
 }
