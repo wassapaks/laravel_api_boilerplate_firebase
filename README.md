@@ -103,4 +103,19 @@ I have place the authentication and routes in api.v2.php. To test add `X_API_VER
 - `DELETE  api/user-management/users/{$id}` to delete user   
 - `GET  api/user-management/users` show all user
 
+## Book Routes (CRUD Example)
+
+`routes/api.php`
+```php
+Route::middleware(['firebase.auth', 'throttle:api'])->group(function () {
+	Route::get('/books', [BookController::class, 'index']);
+	Route::get('/books/{id}', [BookController::class, 'show']);
+	Route::post('/books', [BookController::class, 'store']);
+	Route::put('/books/{id}', [BookController::class, 'update']);
+	Route::delete('/books/{id}', [BookController::class, 'destroy']);
+});
+```
+
+#### Creating Routes
+
 TO BE CONTINUED...
