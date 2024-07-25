@@ -2,7 +2,7 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": ["laravel", "framework", "rest api", "boilerplate", "laravel 11", "firebase", "laravel hateoas", "api gates", "api policies"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
