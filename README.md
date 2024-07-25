@@ -69,7 +69,7 @@ In your routes folder you will see `api.php` and `api.v2.php`, this is how I imp
 
 To add a new version just create a new file ex: `api.v3.php`
 
-`bootstrap/app.php`
+Here is the `bootstrap/app.php` versioning implementation.
 ```php
 ->withRouting(
 	commands: __DIR__  .  '/../routes/console.php',
@@ -93,7 +93,14 @@ To add a new version just create a new file ex: `api.v3.php`
 Add the following headers in your request:
 `X_API_VERSION:`
 
-## Firebase Authentication Routes
-I have place the authentication routes in api.v2.php. To test add `X_API_VERSION: v2` in your header request.
+## Firebase Authentication and User Routes
+I have place the authentication and routes in api.v2.php. To test add `X_API_VERSION: v2` in your header request.
 
+- `POST api/auth/signin` to request for token
+- `GET api/auth/verify` to verify token
+- `POST api/user-management/users` to create user and firebase user
+- `GET api/user-management/users/{$id}` to show singe user
+- `DELETE  api/user-management/users/{$id}` to delete user   
+- `GET  api/user-management/users` show all user
 
+TO BE CONTINUED...
