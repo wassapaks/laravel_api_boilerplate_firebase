@@ -1,7 +1,7 @@
 
 ## Laravel API Boilerplate (Firebase Edition) for Laravel 11
 
-This is a Laravel API Boilerplate you can use to build your first API in seconds. Built on top of Laravel 11 Framework. I developed this for one of my project. This api requires Firebase for authentication, but you can configure to use JWT, Cognito, Sanctum or its up to you. Sharing this as most of the components and framework I used are all open source. 
+This is a Laravel API Boilerplate you can use to build your API in seconds. Built on top of Laravel 11 Framework. Developed this for one of my personal projects. This api requires Firebase for authentication, but you can configure to use JWT, Cognito, Sanctum or its up to you. Sharing this as most of the components and framework I used are all open source and to help someone who has the same need, feel free to PR for improvements and add components I have missed. 
 
 In building this api, I have the following rest components checklist in mind:
 
@@ -116,6 +116,43 @@ Route::middleware(['firebase.auth', 'throttle:api'])->group(function () {
 });
 ```
 
-#### Creating Routes
+Here is how things happen
+- `app/Http/Controllers/BookController.php` handles your inputs and outputs
+- `app/Interfaces/BookRepositoryInterface.php` is binded with `app/Repositories/BookRepository.php` in `app/Providers/RepositoryServiceProvider.php` handling your resource data processes
+- `app/Http/Resources/BookResource.php` handles the resource data return, you can add your hateoas here
+-  `app/Http/Requests/StoreBookRequest.php`, `app/Http/Requests/UpdateBookRequest`handles validation and user policies
 
-TO BE CONTINUED...
+#### Creating Routes
+- You can use existing versions or add a new `api.[new version].php` in the routes directory 
+- In your api the middleware you can specify authentication and throttle 
+```php
+Route::middleware(['firebase.auth', 'throttle:api'])->group(function ()
+```
+- Check [Laravel 11 Routing Document](https://laravel.com/docs/11.x/routing)
+
+## Rate Limiter
+- The rate limiter can be configured in the `app/Http/Providers/RouteServiceProvider.php` 
+```php
+public  function  boot(): void
+{
+	RateLimiter::for('api', function (Request  $request) {
+		$limit = ($request->bearerToken()) ? 1000 : 50;
+			return  Limit::perMinute($limit)->by($request->ip())->response(function (Request $request, array  $headers) {
+				return  ApiResponseClass::tooManyRequest($request->ip());
+			});
+	});
+}
+```
+- Or you can place specific Rate limiter in your specific endpoint in the controller, example:
+```php
+public  function  login(Request  $request): ApiResponseClass
+
+{
+	if (RateLimiter::tooManyAttempts('login-attempt:'.$request->ip(), $perMinute = 5)) {
+		return ApiResponseClass::tooManyRequest($request->ip());
+	}
+	RateLimiter::increment('login-attempt:'.$request->ip());
+```
+
+## TO BE CONTINUED
+ 
