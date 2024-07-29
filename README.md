@@ -211,6 +211,55 @@ public  function  login(Request  $request): ApiResponseClass
 ```
 
 
+## Hateoas
 
-## TO BE CONTINUED
+Using the [HATEOAS](https://github.com/willdurand/Hateoas) Library. You can check the library documentation for more details.
+
+#### Usage 
+1. Place your Hypermedia on the `app/Hateoas/` directy. You can use annotations, XML, Yaml. The example I used is using annotations.
+
+Example
+```php
+<?php
+declare(strict_types=1);
+namespace  App\Hateoas;
+
+use Hateoas\Configuration\Annotation  as Hateoas;
+use JMS\Serializer\Annotation  as Serializer;
+
+/**
+* @Hateoas\Relation("self", href = "expr('/api/books/' ~ object.getId())")
+*/
+
+class  Books
+{
+	/** @Serializer\XmlAttribute */
+	private  $id;
+	public  function  __construct($id)
+	{
+		$this->id = $id;
+	}
+
+	public  function  getId()
+	{
+		return  $this->id;
+	}
+
+}
+```
+ 2. On your Request class you can add the Hateos and merge it to the response data.
+```php
+public  function  toArray(Request  $request): array
+{
+	$data = [
+		'id' => $this->id,
+		'name' => $this->name,
+		'author' => $this->author,
+		'publish_date' => $this->publish_date,
+	];
+	
+	$links = new  HateoasClass(new  Books($this->id));
+	return  $links->getLinks() ? array_merge($data, $links->getLinks()) : $data;
+}
+```
  
