@@ -139,8 +139,24 @@ return [
 ];
 ```
 
-## Security Headers
-You can modify the security headers in `app/Http/Middleware/SecurityHeadersMiddleware.php`
+## Security Headers and CSP
+You can modify the security headers in `app/Http/Middleware/SecurityHeadersMiddleware.php`. 
+
+```php
+// For Reference:
+// https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html#security-headers
+
+$response->headers->set('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
+$response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+$response->headers->set('X-Content-Type-Options', 'no-sniff');
+$response->headers->set('Content-Type', 'application/json');
+$response->headers->set('X-Frame-Options:', 'DENY');
+$response->headers->set('Referrer-Policy:', 'no-referrer');
+$response->headers->set('Permissions-Policy', 'aaccelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(), xr-spatial-tracking=()');
+
+$response->header('X-Api-Version', $request->header('X-Api-Version', 'v1'));
+$response->header('X-Api-Latest-Version', config('app.latestApiVersion'));
+```
 
 ## Book Routes (CRUD Example)
 
