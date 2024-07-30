@@ -8,7 +8,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Hateoas\Relation("self", href = "http://hateoas.web/user/42", attributes = {"type" = "application/json"})
  * @Hateoas\Relation("self", href = "expr('/api/books/' ~ object.getId())")
  */
 class Books

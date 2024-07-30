@@ -30,9 +30,8 @@ class AuthController extends Controller
     public function login(Request $request): ApiResponseClass
     {
         // if (RateLimiter::tooManyAttempts('login-attempt:'.$request->ip(), $perMinute = 5)) {
-        //     return ApiResponseClass::sendResponse('', 'Too many attempts from: '.$request->ip(), 401);
+        //     return ApiResponseClass::tooManyRequest($request->ip());
         // }
-
         // RateLimiter::increment('login-attempt:'.$request->ip());
 
         try {
@@ -56,7 +55,7 @@ class AuthController extends Controller
         $token = $request->bearerToken();
         try {
             $verifiedIdToken = $this->firebase->verifyIdToken($token);
-            $user = $this->firebase->getUser($verifiedIdToken->claims()->get('sub'));
+            $user = $request->user;
             return ApiResponseClass::ok($user);
         } catch (FailedToVerifyToken $e) {
             return ApiResponseClass::forbidden($e);
