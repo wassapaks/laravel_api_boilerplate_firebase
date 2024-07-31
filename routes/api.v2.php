@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\Auth\AuthController;
 
 Route::middleware(['firebase.auth', 'throttle:api'])->group(function () {
     Route::prefix('user-management')->group(function () {
