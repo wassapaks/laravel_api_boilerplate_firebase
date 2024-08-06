@@ -4,6 +4,8 @@ namespace App\Repositories;
 use App\Models\User;    
 use App\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Role;
+use Spatie\Permission\Contracts\Permission;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -21,19 +23,18 @@ class UserRepository implements UserRepositoryInterface
         });
     }
 
-    public function store(array $data){
-        return User::create($data);
-    }
-
-    public function update(array $data, $id){
-        return User::whereId($id)->update($data);
-    }
-
-    public function destroy($id){
-        return User::destroy($id);
-    }
+    public function store($data){}
 
     public static function getByIdUser($id){
         return User::select('id', 'name', 'role_id')->where('id', $id)->first();
+    }
+
+    public function getRole($id){
+        $user = self::getByIdUser($id);
+        return Role::select('id', 'name')->where('id', $user->role_id)->first();
+    }
+
+    public function getPermission($id){
+        // return Permission::select('id', 'name')->where('id', $id)->first();
     }
 }

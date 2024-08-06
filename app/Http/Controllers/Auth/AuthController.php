@@ -63,4 +63,18 @@ class AuthController extends Controller
             return ApiResponseClass::throw($e);
         }
     }
+
+    public function roles(Request $request): ApiResponseClass
+    {
+        $token = $request->bearerToken();
+        try {
+            $verifiedIdToken = $this->firebase->verifyIdToken($token);
+            $user = $request->user;
+            return ApiResponseClass::ok($user);
+        } catch (FailedToVerifyToken $e) {
+            return ApiResponseClass::forbidden($e);
+        } catch (Exception $e){
+            return ApiResponseClass::throw($e);
+        }
+    }
 }

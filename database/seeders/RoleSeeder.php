@@ -19,8 +19,8 @@ class RoleSeeder extends Seeder
                 'guard_name' => 'SuperAdmin'
             ],
             [
-                'name' => 'Secretary',
-                'guard_name' => 'Secretary'
+                'name' => 'Operations Manager',
+                'guard_name' => 'OperationsManager'
             ],
             [
                 'name' => 'Accounts Manager',

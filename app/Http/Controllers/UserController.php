@@ -7,87 +7,47 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Interfaces\UserRepositoryInterface;
+use App\Interfaces\UserServiceInterface;
 use App\Services\FirebaseService;
 
 class UserController extends Controller
 {
-    private UserRepositoryInterface $userRepositoryInterface;
+    private UserRepositoryInterface $userRepository;
+
+    private UserServiceInterface $userService;
+
     private FirebaseService $firebaseService;
 
-    public function __construct(UserRepositoryInterface $userRepositoryInterface, FirebaseService $firebaseService){
-        $this->userRepositoryInterface = $userRepositoryInterface;
+    public function __construct(UserRepositoryInterface $userRepository, FirebaseService $firebaseService, UserServiceInterface $userService){
+        $this->userRepository = $userRepository;
         $this->firebaseService = $firebaseService;
+        $this->userService = $userService;
     }
 
     public function store(StoreUserRequest $request): ApiResponseClass
     {
-        $details = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'c_password' => $request->cpassword,
-            'role_id' => $request->role_id,
-        ];
-
-        DB::beginTransaction();
-
-        try{
-
-            $user = $this->userRepositoryInterface->store($details);
-            $details['id'] = $user->id;
-
-            //When a user is created, we create a firebase account as well
-            if(!$this->firebaseService->createFirebaseAuth($details)){
-                throw new \Exception("Cannot create Firebase Auth"); 
-            }
-
-            $user->givePermissionTo('edit articles', 'delete articles');
-
-            //The account is not yet fully usable they have to verify the link in their given email
-            $this->firebaseService->sendVerificationLink($user->email, env('FIREBASE_CONTINUE_URL'));
-
-            DB::commit();
-            return ApiResponseClass::created(new UserResource($user));
-
-        }catch(\Exception $ex){
-            return ApiResponseClass::rollback($ex);
-        }
+        return $this->userService->createUser($request);
     }
 
     public function update(StoreUserRequest $request, $id): ApiResponseClass
     {
-        $details = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'c_password' => $request->cpassword,
-        ];
-        
-        DB::beginTransaction();
-        try{
-            $user = $this->userRepositoryInterface->update($details, $id);
-            DB::commit();
-            return $user ?
-            ApiResponseClass::updated(new UserResource($request)) :
-            ApiResponseClass::okButResourceNotFound();
-        }catch(\Exception $ex){
-            return ApiResponseClass::rollback($ex);
-        }
+        return $this->userService->update($request, $id);
     }
 
     public function destroy($id): ApiResponseClass
     {
-        return $this->userRepositoryInterface->getById($id) ? 
-        ApiResponseClass::deleted():
-        ApiResponseClass::okButResourceNotFound();
+        return $this->userService->destroy($id);
     }
 
     public function show($id) : ApiResponseClass {
         try{
-            $book = $this->userRepositoryInterface->getById($id);
+            $book = $this->userRepository->getById($id);
             return ApiResponseClass::ok(new UserResource($book));
         }catch (\Exception $ex) {
             return ApiResponseClass::okButResourceNotFound();
         }
+    }
+    public function rolesPermissions($id) : ApiResponseClass {
+        return $this->userService->getUserRolePermissions($id);
     }
 }

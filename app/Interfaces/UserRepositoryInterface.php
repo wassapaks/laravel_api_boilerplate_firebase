@@ -6,7 +6,10 @@ interface UserRepositoryInterface
 {
     public function index();
     public function getById($id);
-    public function store(array $data);
-    public function update(array $data,$id);
-    public function destroy($id);
+
+    public function getPermission($id);
+
+    public function getRole($id);
+
+
 }
