@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, HasUuids;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, HasUuids, HasPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -48,7 +49,5 @@ class User extends Authenticatable
         ];
     }
 
-    public function roles(){
-        return $this->belongsTo(Role::class);
-    }
+    
 }

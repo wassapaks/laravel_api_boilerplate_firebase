@@ -30,11 +30,10 @@ class UserRepository implements UserRepositoryInterface
     }
 
     public function getRole($id){
-        $user = self::getByIdUser($id);
-        return Role::select('id', 'name')->where('id', $user->role_id)->first();
+        return User::find($id)->getRoleNames();
     }
 
     public function getPermission($id){
-        // return Permission::select('id', 'name')->where('id', $id)->first();
+        return User::select('id', 'name', 'role_id')->where('id', $id)->first()->getPermissionNames();
     }
 }

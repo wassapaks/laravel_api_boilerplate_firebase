@@ -31,7 +31,7 @@ class UserService implements UserServiceInterface
             'email' => $request->email,
             'password' => $request->password,
             'c_password' => $request->cpassword,
-            'role_id' => $request->role_id,
+            'role_id' => 1,
         ];
 
         DB::beginTransaction();
@@ -46,7 +46,8 @@ class UserService implements UserServiceInterface
                 throw new \Exception("Cannot create Firebase Auth"); 
             }
 
-            $user->givePermissionTo('edit articles', 'delete articles');
+            $user->assignRole($request->roles);
+            $user->givePermissionTo('create-users', 'delete-users', 'edit-users', 'view-users');
 
             //The account is not yet fully usable they have to verify the link in their given email
             $this->firebaseService->sendVerificationLink($user->email, env('FIREBASE_CONTINUE_URL'));
@@ -91,7 +92,7 @@ class UserService implements UserServiceInterface
             $role = $this->userRepository->getRole($id);
             $permission = $this->userRepository->getPermission($id);
             $data = [
-                'role' => $role->name,
+                'roles' => $role ?: [],
                 'permissions' => $permission ?:[]
             ];
             return ApiResponseClass::ok($data);

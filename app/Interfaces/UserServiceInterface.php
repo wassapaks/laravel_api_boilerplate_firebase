@@ -9,5 +9,4 @@ interface UserServiceInterface
 
     public function destroy($id);
 
-    public function getUserRolePermissions($id);
 }

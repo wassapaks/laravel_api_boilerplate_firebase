@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Classes\ApiResponseClass;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Interfaces\UserRepositoryInterface;
 use App\Interfaces\UserServiceInterface;
 use App\Services\FirebaseService;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -47,7 +47,7 @@ class UserController extends Controller
             return ApiResponseClass::okButResourceNotFound();
         }
     }
-    public function rolesPermissions($id) : ApiResponseClass {
-        return $this->userService->getUserRolePermissions($id);
+    public function rolesPermissions(Request $request) : ApiResponseClass {
+        return $this->userService->getUserRolePermissions($request->user->id);
     }
 }

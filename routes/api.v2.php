@@ -10,7 +10,7 @@ Route::middleware(['firebase.auth', 'throttle:api'])->group(function () {
         Route::put('/users/{$id}', [UserController::class, 'update']);
         Route::delete('/users/{$id}', [UserController::class, 'destroy']);
         Route::get('/users/{id}', [UserController::class, 'show']);
-        Route::get('/roles-permissions/{id}', [UserController::class, 'rolesPermissions']);
+        Route::get('/my-roles-permissions', [UserController::class, 'rolesPermissions']);
     });
     Route::prefix('roles-management')->group(function () {
         Route::get('/roles/{id}', [UserController::class, 'show']);
